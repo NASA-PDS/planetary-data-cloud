@@ -1,90 +1,102 @@
-Order Placement and Data Tier Specification
-Time to Place a Snowball Order: 4-5 days.
+# AWS Snowball Research Report on ATLAS Data Transfer
 
-Data Tier Options:
+# . Order Placement and Data Tier Specification
 
-Glacier: For infrequent access and long-term archival.
+-   **Time to Place a Snowball Order**: 4-5 days.
 
-S3: For frequent access and active workflows.
+-   **Data Tier Options**:
 
-2. Data Transfer Timelines and Capacity
-Transfer Volume:
+    -   **Glacier**: For infrequent access and long-term archival.
 
-80TB of data: Transfer via Snowball takes 4-5 days.
+    -   **S3**: For frequent access and active workflows.
 
-1PB of data: Estimated to take approximately 24 days.
+# 2. Data Transfer Timelines and Capacity
 
-Transfer Modes:
+-   **Transfer Volume**:
 
-Sequential: Data is transferred in a linear sequence.
+    -   80TB of data: Transfer via Snowball takes 4-5 days.
 
-Parallel: Multiple data streams are transferred simultaneously.
+    -   1PB of data: Estimated to take approximately 24 days.
 
-3. Snowball Usage and Cost Analysis
-Capacity Range:
+-   **Transfer Modes**:
 
-For 101-210TB of data, 5 Snowballs were used if using 200TB snowball.
+    -   **Sequential**: Data is transferred in a linear sequence.
 
-Costs:
+    -   **Parallel**: Multiple data streams are transferred
+        simultaneously.
 
-200TB snowball
+# 3. Snowball Usage and Cost Analysis
 
-$3,200 for 15 days per Snowball.
+-   **Capacity Range**:
 
-Additional $250 per day after 15 days.
+    -   For 101-210TB of data, 5 Snowballs were used if using 200TB
+        snowball.
 
-100TB snowball
+-   **Costs**:
 
-$1,800 for 15 days per Snowball.
+    -   200TB snowball
 
-Additional $250 per day after 15 days.
-4. Setup and Configuration
-Physical Setup:
+        -   \$3,200 for 15 days per Snowball.
 
-Assign an IP address to the Snowball.
+            -   Additional \$250 per day after 15 days.
 
-Connect it to the network.
+    -   100TB snowball
 
-Mount the device using an NFS share.
+        -   \$1,800 for 15 days per Snowball.
 
-Data Transfer Process:
+            -   Additional \$250 per day after 15 days.
 
-Use a 10GB fiber or wired network for high-speed transfers.
+# 4. Setup and Configuration
 
-Create a share on the Snowball.
+-   **Physical Setup**:
 
-Mount the share on the system.
+    -   Assign an IP address to the Snowball.
 
-Copy data to the Snowball.
+    -   Connect it to the network.
 
-AWS CLI Tool:
+    -   Mount the device using an NFS share.
 
-Use provided digital keys below to connect to the Snowball.
+-   **Data Transfer Process**:
 
-(1) manifest key
+    -   Use a 10GB fiber or wired network for high-speed transfers.
 
-(2) access key 
+    -   Create a share on the Snowball.
 
-Perform data operations using AWS CLI commands.
+    -   Mount the share on the system.
 
-5. On-Prem Data Copy Requirements
-Connection Requirements:
+    -   Copy data to the Snowball.
 
-Fiber or wired network capable of gigabit speeds.
+-   **AWS CLI Tool**:
 
-Assign an IP address to the Snowball device.
+    -   Use provided digital keys below to connect to the Snowball.
 
-Provide credentials for on-prem access.
+        -   \(1\) *manifest* key
 
-Responsibilities:
+        -   \(2\) *access* key 
 
-Handle data copy to the Snowball.
+    -   Perform data operations using AWS CLI commands.
 
-Perform verification to ensure successful data transfer.
+# 5. On-Prem Data Copy Requirements
 
-6. Additional Notes
-Network and Mounting:
+-   **Connection Requirements**:
 
-Ensure the same network for Snowball and data systems.
+    -   Fiber or wired network capable of gigabit speeds.
 
-Configure NFS share for efficient data transfer.
+    -   Assign an IP address to the Snowball device.
+
+    -   Provide credentials for on-prem access.
+
+-   **Responsibilities**:
+
+    -   Handle data copy to the Snowball.
+
+    -   Perform verification to ensure successful data transfer.
+
+# 6. Additional Notes
+
+-   **Network and Mounting**:
+
+    -   Ensure the same network for Snowball and data systems.
+
+    -   Configure NFS share for efficient data transfer.
+
