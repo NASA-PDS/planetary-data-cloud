@@ -57,7 +57,8 @@ data "aws_iam_policy_document" "pds_s3_data_tagger_role_policy" {
       "s3:GetBucketLocation",
       "s3:GetReplicationConfiguration",
       "s3:InitiateReplication",
-      "s3:DeleteObjectTagging"
+      "s3:DeleteObjectTagging",
+      "s3:DeleteObjectVersionTagging"
     ]
     resources = [
       "arn:aws:s3:::${var.pds_s3_data_tagger_metadata_bucket}/*",
