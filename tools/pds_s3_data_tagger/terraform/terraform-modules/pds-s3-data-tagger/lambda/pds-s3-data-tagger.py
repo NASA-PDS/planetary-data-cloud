@@ -22,8 +22,12 @@ def lambda_handler(event, context):
     logger.debug(f"Response: {response}")
 
     return {
-        'statusCode': 200,
-        'body': json.dumps(f'Processed s3_bucket: {s3_bucket} and s3_key: {s3_key}')
+        "invocationSchemaVersion": f"{event['invocationSchemaVersion']}",
+        "treatMissingKeysAs" : "PermanentFailure",
+        "invocationId" : f"{event['invocationId']}",
+        "results": [
+            f'Processed s3_bucket: {s3_bucket} and s3_key: {s3_key}'
+        ]
     }
 
 
