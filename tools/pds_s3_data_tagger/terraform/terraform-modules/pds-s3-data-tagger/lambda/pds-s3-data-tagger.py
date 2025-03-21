@@ -12,58 +12,76 @@ logger.addHandler(logging.StreamHandler())
 
 
 def lambda_handler(event, context):
+
+    invocation_id = event["invocationId"]
+    invocation_schema_version = event["invocationSchemaVersion"]
+    results = []
+    result_code = None
+    result_string = None
+
+    task = event["tasks"][0]
+    task_id = task["taskId"]
+
     s3_client = boto3.client('s3')
     s3_bucket_arn = event['tasks'][0].get("s3BucketArn")
     s3_bucket = get_bucket_name_from_arn(s3_bucket_arn)
     s3_key = event['tasks'][0].get("s3Key")
 
-    response = set_s3_object_type_tag(s3_client, s3_bucket, s3_key)
+    try:
 
-    logger.debug(f"Response: {response}")
+        """ Sets s3 object_type tag based on the file type """
 
-    return {
-        "invocationSchemaVersion": f"{event['invocationSchemaVersion']}",
-        "treatMissingKeysAs" : "PermanentFailure",
-        "invocationId" : f"{event['invocationId']}",
-        "results": [
-            f'Processed s3_bucket: {s3_bucket} and s3_key: {s3_key}'
-        ]
-    }
-
-
-def set_s3_object_type_tag(s3_client, s3_bucket, s3_key):
-    """ Sets s3 object_type tag based on the file type """
-
-    pds_object_type_tag_value = 'data'
-
-    # Check if the s3_key is None or empty
-    if not s3_key:
-        return None
-
-    # Set pds_object_type_tag_value based on PDS file type
-    if s3_key.lower().endswith('.xml'):
-        pds_object_type_tag_value = 'label'
-    elif s3_key.lower().endswith('.csv'):
-        pds_object_type_tag_value = 'inventory'
-    else:
         pds_object_type_tag_value = 'data'
 
-    response = s3_client.put_object_tagging(
-        Bucket=s3_bucket,
-        Key=s3_key,
-        Tagging={
-            'TagSet': [
-                {
-                    'Key': 'pds_object_type',
-                    'Value': pds_object_type_tag_value,
-                }
-            ],
-        },
-    )
+        # Set pds_object_type_tag_value based on PDS file type
+        if s3_key.lower().endswith('.xml'):
+            pds_object_type_tag_value = 'label'
+        elif s3_key.lower().endswith('.csv'):
+            pds_object_type_tag_value = 'inventory'
+        else:
+            pds_object_type_tag_value = 'data'
 
-    logger.debug(f'Set pds_object_type tag to {pds_object_type_tag_value} for s3_key: {s3_key} in s3_bucket: {s3_bucket}')
+        response = s3_client.put_object_tagging(
+            Bucket=s3_bucket,
+            Key=s3_key,
+            Tagging={
+                'TagSet': [
+                    {
+                        'Key': 'pds_object_type',
+                        'Value': pds_object_type_tag_value,
+                    }
+                ],
+            },
+        )
 
-    return response
+        success_message = f"Set pds_object_type tag to {pds_object_type_tag_value} for s3_key: {s3_key} in s3_bucket: {s3_bucket}'"
+        logger.debug(f"Response: {response}")
+        logger.debug(success_message)
+
+        result_code = "Succeeded"
+        result_string = (
+            success_message
+        )
+
+    except Exception as error:
+        result_code = "PermanentFailure"
+        result_string = str(error)
+        logger.exception(error)
+    finally:
+        results.append(
+            {
+                "taskId": task_id,
+                "resultCode": result_code,
+                "resultString": result_string,
+            }
+        )
+
+    return {
+        "invocationSchemaVersion": invocation_schema_version,
+        "treatMissingKeysAs": "PermanentFailure",
+        "invocationId": invocation_id,
+        "results": results,
+    }
 
 
 def get_bucket_name_from_arn(arn):
