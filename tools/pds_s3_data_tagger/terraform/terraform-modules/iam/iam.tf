@@ -45,6 +45,7 @@ data "aws_iam_policy_document" "pds_s3_data_tagger_role_policy" {
   statement {
     effect = "Allow"
     actions = [
+      "s3:ListBucket",
       "s3:GetObject",
       "s3:GetObjectVersion",
       "s3:PutObject",
